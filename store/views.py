@@ -16,10 +16,11 @@ def home(request):
 
 def category_products(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    products = Product.objects.filter(category=category, is_available=True).order_by("price")
+    products = Product.objects.filter(category=category).order_by("price")
     return render(request, "store/category_products.html", {"category": category, "products": products})
 
 
 def sale_products(request):
     products = Product.objects.filter(is_available=True, has_discount=True).order_by("price")
     return render(request, "store/sale_products.html", {"products": products})
+
