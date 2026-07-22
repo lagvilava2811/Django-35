@@ -24,3 +24,7 @@ def sale_products(request):
     products = Product.objects.filter(is_available=True, has_discount=True).order_by("price")
     return render(request, "store/sale_products.html", {"products": products})
 
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, "store/product_detail.html", {"product": product})
