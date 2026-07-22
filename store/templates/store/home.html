@@ -1,7 +1,40 @@
-﻿{% extends 'store/base.html' %}
-{% block title %}პროდუქტები{% endblock %}
-{% block content %}
-  <h1>იპოვე ის, რაც გჭირდება.</h1><p class="lead">ხელმისაწვდომი პროდუქტები ფასის ზრდადობით.</p>
-  <div class="layout"><aside class="panel"><h2>კატეგორიები</h2><ul class="categories">{% for category in categories %}<li><a href="{% url 'category_products' category.id %}"><span>{{ category.name }}</span><span>({{ category.product_count }})</span></a></li>{% empty %}<li>კატეგორიები ჯერ არ არის.</li>{% endfor %}</ul></aside>
-  <section class="grid">{% for product in products %}<article class="card"><a class="product-link" href="{% url 'product_detail' product.id %}">{% if product.has_discount %}<span class="tag">SALE</span>{% endif %}<span class="category">{{ product.category.name }}</span><h2 class="name">{{ product.name }}</h2><p class="description">{{ product.description|default:"აღწერა არ არის მითითებული." }}</p><strong class="price">₾{{ product.price }}</strong><span class="more">იხილე დეტალურად →</span></a></article>{% empty %}<p class="empty">ხელმისაწვდომი პროდუქტი არ არის.</p>{% endfor %}</section></div>
+﻿{% extends 'store/base.html' %} {% block title %}პროდუქტები{% endblock %} {%
+block content %}
+<h1>იპოვე ის, რაც გჭირდება.</h1>
+<p class="lead">ხელმისაწვდომი პროდუქტები ფასის ზრდადობით.</p>
+<div class="layout">
+  <aside class="panel">
+    <h2>კატეგორიები</h2>
+    <ul class="categories">
+      {% for category in categories %}
+      <li>
+        <a href="{% url 'category_products' category.id %}"
+          ><span>{{ category.name }}</span
+          ><span>({{ category.product_count }})</span></a
+        >
+      </li>
+      {% empty %}
+      <li>კატეგორიები ჯერ არ არის.</li>
+      {% endfor %}
+    </ul>
+  </aside>
+  <section class="grid">
+    {% for product in products %}
+    <article class="card">
+      <a class="product-link" href="{% url 'product_detail' product.id %}"
+        >{% if product.has_discount %}<span class="tag">SALE</span>{% endif
+        %}<span class="category">{{ product.category.name }}</span>
+        <h2 class="name">{{ product.name }}</h2>
+        <p class="description">
+          {{ product.description|default:"აღწერა არ არის მითითებული." }}
+        </p>
+        <strong class="price">₾{{ product.price }}</strong
+        ><span class="more">იხილე დეტალურად →</span></a
+      >
+    </article>
+    {% empty %}
+    <p class="empty">ხელმისაწვდომი პროდუქტი არ არის.</p>
+    {% endfor %}
+  </section>
+</div>
 {% endblock %}

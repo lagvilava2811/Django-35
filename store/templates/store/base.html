@@ -1,28 +1,280 @@
 ﻿<!DOCTYPE html>
 <html lang="ka">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Lumina Market{% endblock %}</title>
-  <style>
-    :root { --ink:#17222d; --muted:#63717e; --line:#e4e8ed; --brand:#116a5b; --brand-soft:#e8f5f1; --sale:#b91c1c; --bg:#f6f7f4; --paper:#fffefa; }
-    * { box-sizing:border-box; } body { margin:0; font-family:Inter,Segoe UI,Arial,sans-serif; color:var(--ink); background:var(--bg); }
-    header { background:rgba(255,254,250,.92); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; backdrop-filter:blur(12px); } .nav, main { width:min(1160px, calc(100% - 36px)); margin:auto; }
-    .nav { min-height:76px; display:flex; gap:26px; align-items:center; } .brand { font-size:1.27rem; font-weight:900; letter-spacing:-.04em; margin-right:auto; color:var(--ink); text-decoration:none; } .brand::before { content:"✦"; color:var(--brand); margin-right:8px; }
-    .nav a { color:var(--muted); text-decoration:none; font-weight:700; font-size:.93rem; } .nav a:hover { color:var(--brand); } main { padding:52px 0 74px; }
-    h1 { margin:0 0 9px; font-size:clamp(2rem,4vw,3.15rem); letter-spacing:-.055em; line-height:1.05; } .lead { color:var(--muted); margin:0 0 31px; font-size:1.03rem; } .layout { display:grid; grid-template-columns:250px 1fr; gap:30px; }
-    .panel, .card, .detail-card { background:var(--paper); border:1px solid var(--line); border-radius:18px; } .panel { padding:21px; height:max-content; position:sticky; top:98px; } .panel h2 { margin:0 0 15px; font-size:.79rem; text-transform:uppercase; letter-spacing:.11em; color:var(--muted); }
-    .categories { list-style:none; padding:0; margin:0; display:grid; gap:5px; } .categories a { display:flex; justify-content:space-between; color:var(--ink); padding:11px 10px; border-radius:10px; text-decoration:none; font-weight:650; } .categories a span:last-child { color:var(--muted); font-size:.85rem; }
-    .categories a:hover { background:var(--brand-soft); color:var(--brand); } .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(225px, 1fr)); gap:18px; }
-    .card { min-height:230px; display:flex; flex-direction:column; overflow:hidden; transition:transform .18s ease, box-shadow .18s ease; } .card:hover { transform:translateY(-5px); box-shadow:0 14px 30px rgba(23,34,45,.09); } .product-link { color:inherit; text-decoration:none; padding:20px; display:flex; flex-direction:column; flex:1; }
-    .tag { background:#fee5e3; color:var(--sale); font-size:.7rem; letter-spacing:.07em; font-weight:900; padding:6px 9px; border-radius:999px; width:max-content; margin-bottom:13px; } .category { color:var(--brand); font-size:.77rem; font-weight:850; letter-spacing:.04em; text-transform:uppercase; margin-bottom:9px; } .name { font-size:1.15rem; letter-spacing:-.025em; font-weight:850; margin:0 0 9px; }
-    .description { color:var(--muted); font-size:.91rem; margin:0 0 18px; line-height:1.52; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; } .price { margin-top:auto; font-size:1.24rem; font-weight:900; letter-spacing:-.03em; } .more { color:var(--brand); margin-top:16px; font-size:.86rem; font-weight:800; }
-    .empty { background:var(--paper); border:1px dashed #b7c0d0; padding:24px; border-radius:14px; color:var(--muted); } .back { color:var(--brand); text-decoration:none; font-weight:800; font-size:.92rem; display:inline-block; margin-bottom:25px; } .detail-card { max-width:760px; padding:clamp(26px,5vw,52px); } .detail-meta { color:var(--brand); font-weight:850; text-transform:uppercase; letter-spacing:.1em; font-size:.76rem; margin-bottom:16px; } .detail-price { display:block; font-size:2rem; margin:28px 0; letter-spacing:-.045em; } .detail-description { color:var(--muted); line-height:1.75; font-size:1.05rem; } .availability { display:inline-block; margin-top:22px; padding:8px 11px; border-radius:8px; background:var(--brand-soft); color:var(--brand); font-weight:800; font-size:.84rem; }
-    @media (max-width:720px) { .nav { min-height:66px; gap:14px; } .nav a { font-size:.8rem; } .layout { grid-template-columns:1fr; } .panel { position:static; } main { padding-top:35px; } }
-  </style>
-</head>
-<body>
-  <header><nav class="nav"><a class="brand" href="{% url 'home' %}">Lumina Market</a><a href="{% url 'home' %}">პროდუქტები</a><a href="{% url 'sale_products' %}">ფასდაკლება</a></nav></header>
-  <main>{% block content %}{% endblock %}</main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Lumina Market{% endblock %}</title>
+    <style>
+      :root {
+        --ink: #17222d;
+        --muted: #63717e;
+        --line: #e4e8ed;
+        --brand: #116a5b;
+        --brand-soft: #e8f5f1;
+        --sale: #b91c1c;
+        --bg: #f6f7f4;
+        --paper: #fffefa;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+      header {
+        background: rgba(255, 254, 250, 0.92);
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        backdrop-filter: blur(12px);
+      }
+      .nav,
+      main {
+        width: min(1160px, calc(100% - 36px));
+        margin: auto;
+      }
+      .nav {
+        min-height: 76px;
+        display: flex;
+        gap: 26px;
+        align-items: center;
+      }
+      .brand {
+        font-size: 1.27rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        margin-right: auto;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .brand::before {
+        content: "✦";
+        color: var(--brand);
+        margin-right: 8px;
+      }
+      .nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.93rem;
+      }
+      .nav a:hover {
+        color: var(--brand);
+      }
+      main {
+        padding: 52px 0 74px;
+      }
+      h1 {
+        margin: 0 0 9px;
+        font-size: clamp(2rem, 4vw, 3.15rem);
+        letter-spacing: -0.055em;
+        line-height: 1.05;
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0 0 31px;
+        font-size: 1.03rem;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+      }
+      .panel,
+      .card,
+      .detail-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+      }
+      .panel {
+        padding: 21px;
+        height: max-content;
+        position: sticky;
+        top: 98px;
+      }
+      .panel h2 {
+        margin: 0 0 15px;
+        font-size: 0.79rem;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        color: var(--muted);
+      }
+      .categories {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 5px;
+      }
+      .categories a {
+        display: flex;
+        justify-content: space-between;
+        color: var(--ink);
+        padding: 11px 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 650;
+      }
+      .categories a span:last-child {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+      .categories a:hover {
+        background: var(--brand-soft);
+        color: var(--brand);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        min-height: 230px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 30px rgba(23, 34, 45, 0.09);
+      }
+      .product-link {
+        color: inherit;
+        text-decoration: none;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .tag {
+        background: #fee5e3;
+        color: var(--sale);
+        font-size: 0.7rem;
+        letter-spacing: 0.07em;
+        font-weight: 900;
+        padding: 6px 9px;
+        border-radius: 999px;
+        width: max-content;
+        margin-bottom: 13px;
+      }
+      .category {
+        color: var(--brand);
+        font-size: 0.77rem;
+        font-weight: 850;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 9px;
+      }
+      .name {
+        font-size: 1.15rem;
+        letter-spacing: -0.025em;
+        font-weight: 850;
+        margin: 0 0 9px;
+      }
+      .description {
+        color: var(--muted);
+        font-size: 0.91rem;
+        margin: 0 0 18px;
+        line-height: 1.52;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .price {
+        margin-top: auto;
+        font-size: 1.24rem;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      .more {
+        color: var(--brand);
+        margin-top: 16px;
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+      .empty {
+        background: var(--paper);
+        border: 1px dashed #b7c0d0;
+        padding: 24px;
+        border-radius: 14px;
+        color: var(--muted);
+      }
+      .back {
+        color: var(--brand);
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 0.92rem;
+        display: inline-block;
+        margin-bottom: 25px;
+      }
+      .detail-card {
+        max-width: 760px;
+        padding: clamp(26px, 5vw, 52px);
+      }
+      .detail-meta {
+        color: var(--brand);
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.76rem;
+        margin-bottom: 16px;
+      }
+      .detail-price {
+        display: block;
+        font-size: 2rem;
+        margin: 28px 0;
+        letter-spacing: -0.045em;
+      }
+      .detail-description {
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 1.05rem;
+      }
+      .availability {
+        display: inline-block;
+        margin-top: 22px;
+        padding: 8px 11px;
+        border-radius: 8px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-weight: 800;
+        font-size: 0.84rem;
+      }
+      @media (max-width: 720px) {
+        .nav {
+          min-height: 66px;
+          gap: 14px;
+        }
+        .nav a {
+          font-size: 0.8rem;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .panel {
+          position: static;
+        }
+        main {
+          padding-top: 35px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+        <a class="brand" href="{% url 'home' %}">Lumina Market</a
+        ><a href="{% url 'home' %}">პროდუქტები</a
+        ><a href="{% url 'sale_products' %}">ფასდაკლება</a>
+      </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+  </body>
 </html>

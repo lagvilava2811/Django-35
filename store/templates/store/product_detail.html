@@ -1,13 +1,17 @@
-﻿{% extends 'store/base.html' %}
-{% block title %}{{ product.name }}{% endblock %}
-{% block content %}
-  <a class="back" href="{% url 'home' %}">← ყველა პროდუქტზე დაბრუნება</a>
-  <article class="detail-card">
-    {% if product.has_discount %}<span class="tag">SALE</span>{% endif %}
-    <div class="detail-meta">{{ product.category.name }}</div>
-    <h1>{{ product.name }}</h1>
-    <strong class="detail-price">₾{{ product.price }}</strong>
-    <p class="detail-description">{{ product.description|default:"ამ პროდუქტისთვის აღწერა არ არის მითითებული." }}</p>
-    {% if product.is_available %}<span class="availability">● ხელმისაწვდომია</span>{% else %}<span class="availability">ამჟამად არ არის ხელმისაწვდომი</span>{% endif %}
-  </article>
+﻿{% extends 'store/base.html' %} {% block title %}{{ product.name }}{% endblock
+%} {% block content %}
+<a class="back" href="{% url 'home' %}">← ყველა პროდუქტზე დაბრუნება</a>
+<article class="detail-card">
+  {% if product.has_discount %}<span class="tag">SALE</span>{% endif %}
+  <div class="detail-meta">{{ product.category.name }}</div>
+  <h1>{{ product.name }}</h1>
+  <strong class="detail-price">₾{{ product.price }}</strong>
+  <p class="detail-description">
+    {{ product.description|default:"ამ პროდუქტისთვის აღწერა არ არის მითითებული."
+    }}
+  </p>
+  {% if product.is_available %}<span class="availability">● ხელმისაწვდომია</span
+  >{% else %}<span class="availability">ამჟამად არ არის ხელმისაწვდომი</span>{%
+  endif %}
+</article>
 {% endblock %}
