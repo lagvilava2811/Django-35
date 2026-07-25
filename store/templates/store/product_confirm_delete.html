@@ -1,0 +1,13 @@
+{% extends 'store/base.html' %}
+{% block title %}პროდუქტის წაშლა{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'product_detail' product.id %}">← დეტალურ გვერდზე დაბრუნება</a>
+<article class="detail-card">
+  <h1>პროდუქტის წაშლა</h1>
+  <p class="lead">დარწმუნებული ხართ, რომ „{{ product.name }}“ უნდა წაიშალოს?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">დიახ, წაშალე</button>
+  </form>
+</article>
+{% endblock %}

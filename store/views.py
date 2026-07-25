@@ -1,6 +1,7 @@
 ﻿from django.db.models import Count
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import ProductForm
 from .models import Category, Product
 
 
@@ -28,3 +29,32 @@ def sale_products(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, "store/product_detail.html", {"product": product})
+
+
+def product_create(request):
+    form = ProductForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        product = form.save()
+        return redirect("product_detail", product_id=product.id)
+    return render(request, "store/product_form.html", {"form": form, "title": "პროდუქტის დამატება"})
+
+
+def product_update(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    form = ProductForm(request.POST or None, instance=product)
+    if request.method == "POST" and form.is_valid():
+        product = form.save()
+        return redirect("product_detail", product_id=product.id)
+    return render(
+        request,
+        "store/product_form.html",
+        {"form": form, "title": "პროდუქტის განახლება", "product": product},
+    )
+
+
+def product_delete(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == "POST":
+        product.delete()
+        return redirect("home")
+    return render(request, "store/product_confirm_delete.html", {"product": product})

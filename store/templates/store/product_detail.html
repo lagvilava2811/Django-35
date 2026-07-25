@@ -9,5 +9,9 @@
   <strong class="detail-price">₾{{ product.price }}</strong>
   <p class="detail-description">{{ product.description|default:"ამ პროდუქტისთვის აღწერა არ არის მითითებული." }}</p>
   {% if product.is_available %}<span class="availability">● ხელმისაწვდომია</span>{% else %}<span class="availability">ამჟამად არ არის ხელმისაწვდომი</span>{% endif %}
+  <p>
+    <a class="back" href="{% url 'product_update' product.id %}">პროდუქტის განახლება</a>
+    <a class="back" href="{% url 'product_delete' product.id %}">პროდუქტის წაშლა</a>
+  </p>
 </article>
 {% endblock %}
