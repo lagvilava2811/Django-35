@@ -1,9 +1,15 @@
 {% extends 'store/base.html' %}
-{% block title %}ფასდაკლება{% endblock %}
+{% block title %}ფასდაკლებები{% endblock %}
 {% block content %}
-<h1>ფასდაკლებული პროდუქტები</h1>
-<p class="lead">საუკეთესო არჩევანი უკეთეს ფასად.</p>
-<section class="grid">
+<section class="hero">
+  <div>
+    <p class="eyebrow">სპეციალური არჩევანი</p>
+    <h1>ფასდაკლებული პროდუქტები.</h1>
+    <p class="lead">შეარჩიე ხარისხიანი ნივთები უფრო ხელსაყრელ ფასად.</p>
+  </div>
+  <div class="hero-actions"><a class="button button-light" href="{% url 'home' %}">ყველა პროდუქტი</a></div>
+</section>
+<section class="grid" aria-label="ფასდაკლებული პროდუქტები">
   {% for product in products %}
   <article class="card">
     <a class="product-link" href="{% url 'product_detail' product.id %}">
@@ -11,7 +17,8 @@
       <span class="category">{{ product.category.name }}</span>
       <h2 class="name">{{ product.name }}</h2>
       <p class="description">{{ product.description|default:"აღწერა არ არის მითითებული." }}</p>
-      <strong class="price">₾{{ product.price }}</strong><span class="more">იხილე დეტალურად →</span>
+      <strong class="price">₾{{ product.price }}</strong>
+      <span class="more">დეტალების ნახვა</span>
     </a>
   </article>
   {% empty %}

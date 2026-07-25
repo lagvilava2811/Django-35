@@ -1,13 +1,17 @@
 {% extends 'store/base.html' %}
 {% block title %}პროდუქტის წაშლა{% endblock %}
 {% block content %}
-<a class="back" href="{% url 'product_detail' product.id %}">← დეტალურ გვერდზე დაბრუნება</a>
-<article class="detail-card">
+<a class="back" href="{% url 'product_detail' product.id %}">დეტალურ გვერდზე დაბრუნება</a>
+<article class="form-card">
+  <p class="eyebrow">მოქმედების დადასტურება</p>
   <h1>პროდუქტის წაშლა</h1>
-  <p class="lead">დარწმუნებული ხართ, რომ „{{ product.name }}“ უნდა წაიშალოს?</p>
+  <p class="confirm-text">დარწმუნებული ხართ, რომ „{{ product.name }}“ უნდა წაიშალოს? ეს მოქმედება ვეღარ გაუქმდება.</p>
   <form method="post">
     {% csrf_token %}
-    <button type="submit">დიახ, წაშალე</button>
+    <div class="actions">
+      <button class="button button-danger" type="submit">დიახ, წაშალე</button>
+      <a class="button button-secondary" href="{% url 'product_detail' product.id %}">გაუქმება</a>
+    </div>
   </form>
 </article>
 {% endblock %}

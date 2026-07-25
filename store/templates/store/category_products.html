@@ -1,9 +1,13 @@
 {% extends 'store/base.html' %}
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
-<h1>{{ category.name }}</h1>
-<p class="lead">ამ კატეგორიის ყველა პროდუქტი.</p>
-<section class="grid">
+<a class="back" href="{% url 'home' %}">ყველა პროდუქტზე დაბრუნება</a>
+<section class="page-heading">
+  <p class="eyebrow">კატეგორია</p>
+  <h1>{{ category.name }}</h1>
+  <p class="lead">ამ კატეგორიის პროდუქტები ერთ სივრცეში.</p>
+</section>
+<section class="grid" aria-label="{{ category.name }} პროდუქტები">
   {% for product in products %}
   <article class="card">
     <a class="product-link" href="{% url 'product_detail' product.id %}">
@@ -11,7 +15,8 @@
       <span class="category">{{ product.category.name }}</span>
       <h2 class="name">{{ product.name }}</h2>
       <p class="description">{{ product.description|default:"აღწერა არ არის მითითებული." }}</p>
-      <strong class="price">₾{{ product.price }}</strong><span class="more">იხილე დეტალურად →</span>
+      <strong class="price">₾{{ product.price }}</strong>
+      <span class="more">დეტალების ნახვა</span>
     </a>
   </article>
   {% empty %}
