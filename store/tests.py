@@ -55,3 +55,60 @@ class StoreViewsTests(TestCase):
         for url in urls:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
+
+
+class ProductManagementTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Electronics")
+        self.product = Product.objects.create(
+            name="Headphones",
+            price=Decimal("99.99"),
+            quantity=5,
+            category=self.category,
+        )
+
+    def test_create_product(self):
+        response = self.client.post(
+            reverse("product_create"),
+            {
+                "name": "Keyboard",
+                "price": "149.99",
+                "quantity": 8,
+                "description": "Mechanical keyboard",
+                "is_available": "on",
+                "has_discount": "on",
+                "category": self.category.id,
+            },
+        )
+
+        product = Product.objects.get(name="Keyboard")
+        self.assertRedirects(response, reverse("product_detail", args=[product.id]))
+        self.assertTrue(product.has_discount)
+
+    def test_update_product(self):
+        response = self.client.post(
+            reverse("product_update", args=[self.product.id]),
+            {
+                "name": "Updated headphones",
+                "price": "79.99",
+                "quantity": 7,
+                "description": "Updated description",
+                "is_available": "on",
+                "category": self.category.id,
+            },
+        )
+
+        self.product.refresh_from_db()
+        self.assertRedirects(response, reverse("product_detail", args=[self.product.id]))
+        self.assertEqual(self.product.name, "Updated headphones")
+        self.assertEqual(self.product.price, Decimal("79.99"))
+        self.assertFalse(self.product.has_discount)
+
+    def test_delete_product_requires_confirmation_and_removes_product(self):
+        url = reverse("product_delete", args=[self.product.id])
+
+        self.assertEqual(self.client.get(url).status_code, 200)
+        response = self.client.post(url)
+
+        self.assertRedirects(response, reverse("home"))
+        self.assertFalse(Product.objects.filter(id=self.product.id).exists())
