@@ -6,7 +6,7 @@ from .models import Category, Product
 
 
 def home(request):
-    products = Product.objects.filter(is_available=True).order_by("price")
+    products = Product.objects.filter(is_available=True).select_related("category").order_by("price")
     categories = (
         Category.objects.filter(products__isnull=False)
         .annotate(product_count=Count("products"))
