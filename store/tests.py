@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.test import TestCase
+from django.conf import settings
 from django.urls import reverse
 
 from .models import Category, Product
@@ -59,6 +60,9 @@ class StoreViewsTests(TestCase):
     def test_home_loads_products_and_categories_in_two_queries(self):
         with self.assertNumQueries(2):
             self.client.get(reverse("home"))
+
+    def test_debug_toolbar_is_enabled(self):
+        self.assertIn("debug_toolbar", settings.INSTALLED_APPS)
 
 
 class ProductManagementTests(TestCase):
