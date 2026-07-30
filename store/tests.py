@@ -56,6 +56,10 @@ class StoreViewsTests(TestCase):
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
 
+    def test_home_loads_products_and_categories_in_two_queries(self):
+        with self.assertNumQueries(2):
+            self.client.get(reverse("home"))
+
 
 class ProductManagementTests(TestCase):
     def setUp(self):
