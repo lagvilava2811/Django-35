@@ -1,7 +1,9 @@
-﻿from django.contrib import admin
-from django.urls import path
+from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path
 
 from store import views
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -13,3 +15,6 @@ urlpatterns = [
     path("products/<int:product_id>/delete/", views.product_delete, name="product_delete"),
     path("sale/", views.sale_products, name="sale_products"),
 ]
+
+if settings.DEBUG:
+    urlpatterns = [path("__debug__/", include("debug_toolbar.urls"))] + urlpatterns
