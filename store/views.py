@@ -1,60 +1,89 @@
-﻿from django.db.models import Count
-from django.shortcuts import get_object_or_404, redirect, render
+from django.db.models import Count
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import ProductForm
 from .models import Category, Product
 
 
-def home(request):
-    products = Product.objects.filter(is_available=True).select_related("category").order_by("price")
-    categories = (
-        Category.objects.filter(products__isnull=False)
-        .annotate(product_count=Count("products"))
-        .distinct()
-    )
-    return render(request, "store/home.html", {"products": products, "categories": categories})
+class HomeView(TemplateView):
+    template_name = "store/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["products"] = (
+            Product.objects.filter(is_available=True)
+            .select_related("category")
+            .order_by("price")
+        )
+        context["categories"] = (
+            Category.objects.filter(products__isnull=False)
+            .annotate(product_count=Count("products"))
+            .distinct()
+        )
+        return context
 
 
-def category_products(request, category_id):
-    category = get_object_or_404(Category, id=category_id)
-    products = Product.objects.filter(category=category).order_by("price")
-    return render(request, "store/category_products.html", {"category": category, "products": products})
+class CategoryProductsView(DetailView):
+    model = Category
+    template_name = "store/category_products.html"
+    context_object_name = "category"
+    pk_url_kwarg = "category_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["products"] = self.object.products.order_by("price")
+        return context
 
 
-def sale_products(request):
-    products = Product.objects.filter(is_available=True, has_discount=True).order_by("price")
-    return render(request, "store/sale_products.html", {"products": products})
+class SaleProductsView(ListView):
+    template_name = "store/sale_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        return Product.objects.filter(is_available=True, has_discount=True).order_by("price")
 
 
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    return render(request, "store/product_detail.html", {"product": product})
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = "store/product_detail.html"
+    context_object_name = "product"
+    pk_url_kwarg = "product_id"
 
 
-def product_create(request):
-    form = ProductForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        product = form.save()
-        return redirect("product_detail", product_id=product.id)
-    return render(request, "store/product_form.html", {"form": form, "title": "პროდუქტის დამატება"})
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "store/product_form.html"
+
+    def get_success_url(self):
+        return reverse_lazy("product_detail", kwargs={"product_id": self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "პროდუქტის დამატება"
+        return context
 
 
-def product_update(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    form = ProductForm(request.POST or None, instance=product)
-    if request.method == "POST" and form.is_valid():
-        product = form.save()
-        return redirect("product_detail", product_id=product.id)
-    return render(
-        request,
-        "store/product_form.html",
-        {"form": form, "title": "პროდუქტის განახლება", "product": product},
-    )
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "store/product_form.html"
+    context_object_name = "product"
+    pk_url_kwarg = "product_id"
+
+    def get_success_url(self):
+        return reverse_lazy("product_detail", kwargs={"product_id": self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "პროდუქტის განახლება"
+        return context
 
 
-def product_delete(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == "POST":
-        product.delete()
-        return redirect("home")
-    return render(request, "store/product_confirm_delete.html", {"product": product})
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = "store/product_confirm_delete.html"
+    context_object_name = "product"
+    pk_url_kwarg = "product_id"
+    success_url = reverse_lazy("home")
